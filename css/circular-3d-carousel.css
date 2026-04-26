@@ -1,0 +1,175 @@
+/* ==========================================
+   3D Circular Carousel - Non-conflicting Styles
+   ========================================== */
+
+.circular-3d-carousel-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+    min-height: 500px;
+}
+
+.circular-3d-carousel {
+    --carousel-diameter: 45rem;
+    --carousel-radius: 22.5rem;
+    --carousel-item-width: 10rem;
+    --carousel-item-height: 15rem;
+    --carousel-perspective: 1200px;
+    --carousel-duration: 20s;
+    --carousel-bg: #0a0a0a;
+
+    position: relative;
+    width: var(--carousel-diameter);
+    height: var(--carousel-diameter);
+    perspective: var(--carousel-perspective);
+    perspective-origin: 50% 15%;
+}
+
+.circular-3d-carousel .circular-3d-control-button {
+    position: absolute;
+    z-index: 10;
+    width: 1.5rem;
+    height: 4rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.circular-3d-carousel .circular-3d-control-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.circular-3d-carousel .circular-3d-control-button input {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.circular-3d-carousel .circular-3d-control-button.left {
+    clip-path: polygon(0% 50%, 100% 0%, 100% 100%);
+    left: 0;
+}
+
+.circular-3d-carousel .circular-3d-control-button.right {
+    clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
+    right: 0;
+}
+
+.circular-3d-carousel:has(.circular-3d-control-button.left input:checked) {
+    --carousel-direction: normal;
+}
+
+.circular-3d-carousel:has(.circular-3d-control-button.right input:checked) {
+    --carousel-direction: reverse;
+}
+
+.circular-3d-carousel .circular-3d-rotation {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+}
+
+.circular-3d-carousel .circular-3d-items {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    transform-style: preserve-3d;
+    animation: circular-3d-rotate var(--carousel-duration) linear infinite;
+}
+
+.circular-3d-carousel:has(.circular-3d-item:hover) .circular-3d-items {
+    animation-play-state: paused;
+}
+
+.circular-3d-carousel .circular-3d-item {
+    --angle: calc(360deg / var(--total-items) * var(--i));
+    --depth: var(--carousel-radius);
+    position: absolute;
+    width: var(--carousel-item-width);
+    height: var(--carousel-item-height);
+    left: 50%;
+    top: 50%;
+    margin-left: calc(var(--carousel-item-width) / -2);
+    margin-top: calc(var(--carousel-item-height) / -2);
+    transform: rotateY(var(--angle)) translateZ(var(--depth));
+    transform-style: preserve-3d;
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+.circular-3d-carousel .circular-3d-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--img);
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.circular-3d-carousel .circular-3d-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 50%);
+    border-radius: 12px;
+    pointer-events: none;
+}
+
+.circular-3d-carousel .circular-3d-item:hover {
+    transform: rotateY(var(--angle)) translateZ(calc(var(--depth) * 1.2));
+}
+
+.circular-3d-carousel .circular-3d-item:hover::before {
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3), 0 15px 40px rgba(0, 0, 0, 0.5);
+}
+
+.circular-3d-carousel .circular-3d-ground {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    left: 10%;
+    top: 10%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.8) 0%, transparent 70%);
+    transform: rotateX(75deg) translateZ(-50px);
+    opacity: 0.4;
+}
+
+@keyframes circular-3d-rotate {
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .circular-3d-carousel {
+        --carousel-diameter: 30rem;
+        --carousel-radius: 15rem;
+        --carousel-item-width: 7rem;
+        --carousel-item-height: 10rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .circular-3d-carousel {
+        --carousel-diameter: 22rem;
+        --carousel-radius: 11rem;
+        --carousel-item-width: 5rem;
+        --carousel-item-height: 7.5rem;
+    }
+
+    .circular-3d-carousel-wrapper {
+        min-height: 350px;
+    }
+}
