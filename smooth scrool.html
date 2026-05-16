@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <style>
+        @import url("https://fonts.googleapis.com/css?family=Roboto:400,500,700,900&subset=latin-ext");
+
+        html {
+            position: relative;
+            overflow-x: hidden !important;
+        }
+
+        body {
+            font-family: "Roboto", sans-serif;
+            font-size: 16px;
+            background: #050510; /* site background */
+            color: #e6e9f2;
+        }
+
+        a,
+        a:hover {
+            text-decoration: none;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(180deg, rgba(5,5,16,1) 0%, rgba(10,16,32,1) 100%);
+            padding: 20px 10px;
+        }
+
+        .scroll-list {
+            width: 100%;
+            max-width: 980px;
+            padding: 25px;
+            margin-top: 50px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .scroll-list__header {
+            margin-bottom: 22px;
+            text-align: center;
+        }
+
+        .scroll-list__title {
+            margin: 0 0 10px;
+            color: #b2ecff;
+            font-size: 30px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            text-shadow: 0 0 18px rgba(126, 200, 255, 0.18);
+        }
+
+        .scroll-list__subtitle {
+            margin: 0 auto;
+            font-size: 15px;
+            color: rgba(232, 244, 255, 0.86);
+            line-height: 1.75;
+            max-width: 720px;
+        }
+
+        .scroll-list__hint {
+            margin: 20px auto 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #c5e6ff;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            opacity: 0.82;
+            animation: hintPulse 2.8s ease-in-out infinite;
+        }
+
+        .scroll-list__hint-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            border: 1px solid rgba(126, 200, 255, 0.5);
+            background: rgba(20, 60, 140, 0.28);
+            box-shadow: 0 0 18px rgba(126, 200, 255, 0.16);
+        }
+
+        @keyframes hintPulse {
+            0%, 100% { opacity: 0.82; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-4px); }
+        }
+
+        @media screen and (max-width: 768px) {
+            .scroll-list {
+                margin-top: 20px;
+            }
+        }
+
+
+        .scroll-list__wrp {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            max-height: 780px;
+            overflow: auto;
+            padding: 40px;
+            box-shadow: 0px 20px 60px rgba(0,0,0,0.55);
+            background: rgba(5, 8, 22, 0.84);
+            border: 1px solid rgba(120, 160, 255, 0.12);
+            backdrop-filter: blur(12px);
+            border-radius: 18px;
+        }
+
+        .scroll-list__wrp::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 92%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(circle at top, rgba(88, 146, 255, 0.12), transparent 42%);
+            border-radius: inherit;
+        }
+
+        /* Centre card styles */
+        .center-card {
+            position: relative;
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+            padding: 18px;
+            background: rgba(15, 28, 65, 0.46);
+            border: 1px solid rgba(112, 162, 255, 0.14);
+            border-radius: 16px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+        }
+
+        .center-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(180deg, rgba(126, 200, 255, 0.9), rgba(20, 70, 160, 0.4));
+            border-top-left-radius: 16px;
+            border-bottom-left-radius: 16px;
+        }
+
+        .center-card__img {
+            width: 120px;
+            min-width: 120px;
+            height: 120px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(21, 57, 131, 0.86) 0%, rgba(10, 22, 58, 0.93) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e8f4ff;
+            font-weight: 700;
+            font-size: 18px;
+            overflow: hidden;
+            box-shadow: 0 12px 25px rgba(8, 22, 78, 0.32);
+            border: 1px solid rgba(104, 168, 255, 0.2);
+        }
+
+        .center-card__img img{width:100%;height:100%;object-fit:cover;display:block}
+
+        .center-card__body {
+            flex: 1;
+            color: #e6e9f2;
+        }
+
+        .center-card__body p {
+            margin: 10px 0 0;
+        }
+
+        .center-card__body p strong {
+            color: #d5f2ff;
+        }
+
+        .center-title {
+            margin: 0 0 8px 0;
+            color: #7ec8ff;
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+
+        .center-map {
+            width: 220px;
+            height: 140px;
+            border-radius: 16px;
+            overflow: hidden;
+            flex: 0 0 220px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.32);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(124, 186, 255, 0.16);
+            backdrop-filter: blur(10px);
+        }
+
+        .center-map iframe{width:100%;height:100%;border:0}
+
+        .center-meta {margin:6px 0;color: rgba(232, 244, 255, 0.86); line-height: 1.6;}
+
+        .center-meta strong{color:#ffffff}
+
+        .scroll-list__wrp .scrollbar-track {
+            display: none !important;
+        }
+
+        @media screen and (max-width: 768px) {
+            .scroll-list__wrp {
+                padding: 25px;
+            }
+        }
+
+        /* Responsive adjustments for medium and small screens */
+        @media screen and (max-width: 900px) {
+            .scroll-list__wrp {
+                height: 65vh;
+                padding: 24px;
+            }
+
+            .center-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .center-map {
+                order: 3;
+                width: 100%;
+                flex: 0 0 auto;
+                height: 180px;
+                margin-top: 12px;
+            }
+
+            .center-card__img {
+                width: 90px;
+                min-width: 90px;
+                height: 90px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .scroll-list {
+                padding: 12px;
+                max-width: 100%;
+            }
+
+            .scroll-list__wrp {
+                padding: 16px;
+                height: 60vh;
+            }
+
+            .center-title {
+                font-size: 18px;
+            }
+
+            .center-card__img {
+                width: 76px;
+                min-width: 76px;
+                height: 76px;
+                font-size: 16px;
+            }
+
+            .center-map {
+                height: 150px;
+            }
+
+            .scroll-list__item {
+                padding: 10px;
+                gap: 12px;
+            }
+        }
+
+        /* Additional mobile polish */
+        @media screen and (max-width: 420px) {
+            .center-card__body {font-size: 14px}
+            .center-meta {font-size: 13px}
+            .center-title {font-size: 17px}
+            .center-map {height: 140px}
+            .center-card__img {width:68px; height:68px; min-width:68px}
+            .scroll-list__wrp {padding: 12px}
+            .scroll-list {padding: 8px}
+        }
+
+        .scroll-list__item {
+            width: 100%;
+            display: block;
+            margin-bottom: 15px;
+            border-radius: 18px;
+            background: rgba(12, 24, 65, 0.72);
+            transition: all 0.35s ease-in-out;
+            opacity: 0;
+            transform: scale(0.7);
+            box-shadow: 0 14px 28px rgba(2, 10, 35, 0.22);
+            padding: 10px;
+            border: 1px solid rgba(116, 173, 255, 0.14);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .scroll-list__item.item-hide {
+            opacity: 0;
+            transform: scale(0.7);
+        }
+
+        .scroll-list__item.item-focus {
+            opacity: 1;
+            transform: scale(1);
+            box-shadow: 0 18px 30px rgba(6, 24, 90, 0.32);
+            border-color: rgba(124, 186, 255, 0.28);
+        }
+
+        .scroll-list__item.item-next {
+            opacity: 1;
+            transform: scale(1);
+            box-shadow: 0 14px 24px rgba(7, 20, 76, 0.26);
+        }
+
+        .scroll-list__item.item-next+.scroll-list__item {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .scroll-list__item:last-child {
+            margin-bottom: 155px;
+        }
+
+        .scroll-list__item:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 18px 36px rgba(7, 22, 80, 0.32);
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <div class="scroll-list">
+            <div class="scroll-list__header">
+                <h1 class="scroll-list__title">Experience Centres</h1>
+                <p class="scroll-list__subtitle">Browse through our locations and leaders in a smooth scrolling timeline. Each card blends cleanly with your brand colors and highlights the next centre for visitors.</p>
+                <div class="scroll-list__hint">
+                    <span class="scroll-list__hint-icon">↓</span>
+                    Scroll to discover more centres
+                </div>
+            </div>
+            
+            <div class="scroll-list__wrp js-scroll-content js-scroll-list">
+                <div class="scroll-list__item js-scroll-list-item">
+                    <div class="center-card">
+                        
+                    </div>
+                </div>
+
+                <div class="scroll-list__item js-scroll-list-item">
+                    <div class="center-card">
+                        <img class="center-card__img" aria-hidden="true" src="images\graphics\pastors\FB_IMG_1773532785944.jpg" alt="">
+                        <div class="center-card__body">
+                            <h3 class="center-title">AMAZING EXPERIENCE CENTRE</h3>
+                            <p class="center-meta"><strong>LOCATION:</strong> PEPPERONI FROM CITY CROWN – IWOFE – ST. JOHNS - ORO EKPO BY IWOFE, NOBLE DRIVE TO GAS – ELIOPARANWO AFTER APOSTOLIC CHURCH</p>
+                            <p class="center-meta"><strong>LEADERS:</strong> PST. HUDSON IROKALEZI - FAITH OSAM – MIN. KINDNESS IROKALEZI</p>
+                            <p class="center-meta"><strong>PHONE NUMBER:</strong> 08038703919</p>
+                        </div>
+                        <div class="center-map">
+                            <iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Pepperoni+City+Crown+Iwofe&z=13&output=embed"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scroll-list__item js-scroll-list-item">
+                    <div class="center-card">
+                        <img class="center-card__img" aria-hidden="true" src="images\graphics\pastors\pastor williams.jpeg" alt="">
+                        <div class="center-card__body">
+                            <h3 class="center-title">LIFE EXPERIENCE CENTRE</h3>
+                            <p class="center-meta"><strong>LOCATION:</strong> LOCATION JUNCTION BY GENESIS, ADA GEORGE, OKILTON RD, BAKERY, AKANOLU, FARM ROAD, OMEGA CLINIC, MINI ORLU, NEW ROAD, RUMOKE</p>
+                            <p class="center-meta"><strong>LEADERS:</strong> PST. WILLIAMS CHUKWU, MIN. FAITH GILBERT, MIN. VIVIAN ADESOPE, MIN. GEORGE OBURU, MIN. OLA WILLIAMS, MIN. CHRISTOPHER ULOYOR, MIN. BETHEL ENYICHI</p>
+                            <p class="center-meta"><strong>PHONE NUMBER:</strong> 08037045706</p>
+                        </div>
+                        <div class="center-map">
+                            <iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Genesis+Ada+George+Junction&z=13&output=embed"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scroll-list__item js-scroll-list-item">
+                    <div class="center-card">
+                        <img class="center-card__img" aria-hidden="true" src="images\graphics\pastors\pastor val.jpeg" alt="">
+                        <div class="center-card__body">
+                            <h3 class="center-title">EXCELLENT EXPERIENCE CENTRE</h3>
+                            <p class="center-meta"><strong>LOCATION:</strong> TLCC – ELIOPRANWO BY APOSTOLIC CHURCH – PEPPERONI – ORO EKPO BY ADA GEORGE TO NOBLE DRIVE – CHINDA FROM ISAIAH TO ADA GEORGE – AGIP – KALA – NKAKINI – ORAZI - WIMPY - MILE 1,2,3. RUMUEME</p>
+                            <p class="center-meta"><strong>LEADERS:</strong> PST. VALEREEN WEALTH, MIN. EMMANUEL KINGS, MIN. EMMANUEL RICHARD, MIN MIRACLE FRANCIS</p>
+                            <p class="center-meta"><strong>PHONE NUMBER:</strong> 08130002180</p>
+                        </div>
+                        <div class="center-map">
+                            <iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=ElioPranwo+Apostolic+Church&z=13&output=embed"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scroll-list__item js-scroll-list-item">
+                    <div class="center-card">
+                        <img class="center-card__img" aria-hidden="true" src="images\graphics\pastors\pastor val.jpeg" alt="">
+                        <div class="center-card__body">
+                            <h3 class="center-title">PROSPEROUS EXPERIENCE CENTRE</h3>
+                            <p class="center-meta"><strong>LOCATION:</strong> RUMUIGBO – ELIOZU – NKPOLU – RUKPOKWU - RUMUODUMANYA – EAST WEST ROAD – RUMUOKORO – OBIRI IKWERE TO EAST WEST ROAD – Y JUNCTION BACK TO EAST WEST ROAD</p>
+                            <p class="center-meta"><strong>LEADERS:</strong> MIN. BENEDICTA AMADI – MIN. JANE RUFUS</p>
+                            <p class="center-meta"><strong>PHONE NUMBER:</strong> 08064196010</p>
+                        </div>
+                        <div class="center-map">
+                            <iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Rumuigbo+Rumuokoro&z=13&output=embed"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scroll-list__item js-scroll-list-item">
+                    <div class="center-card">
+                        <img class="center-card__img" aria-hidden="true" src="images\graphics\pastors\PND.jpg" alt="">
+                        <div class="center-card__body">
+                            <h3 class="center-title">RHEMA EXPERIENCE CENTRE</h3>
+                            <p class="center-meta"><strong>LOCATION:</strong> RUMUOKORO – OBIRI IKWERE TO EAST WEST ROAD - Y JUNCTION BACK TO EAST WEST ROAD - RUKPOKWU – ENEKA – IGWURUTA</p>
+                            <p class="center-meta"><strong>LEADERS:</strong> PND</p>
+                            <p class="center-meta"><strong>PHONE NUMBER:</strong> 09094228282</p>
+                        </div>
+                        <div class="center-map">
+                            <iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Rumuokoro+Rivers+State&z=13&output=embed"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scroll-list__item js-scroll-list-item">
+                    <div class="center-card">
+                        <img class="center-card__img" aria-hidden="true" src="images\graphics\pastors\pastor val.jpeg" alt="">
+                        <div class="center-card__body">
+                            <h3 class="center-title">LOVE STREAM EXPRESSIONS (CAMPUS)</h3>
+                            <p class="center-meta"><strong>LOCATION:</strong> UNIPORT- RSUST - IGNATIUS AJURU UNIVERSITY</p>
+                            <p class="center-meta"><strong>LEADERS:</strong> MIN. EVANS IDONGESIT, MIN. OTI CHANINOMI</p>
+                            <p class="center-meta"><strong>PHONE NUMBER:</strong> 08065756805</p>
+                        </div>
+                        <div class="center-map">
+                            <iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=University+of+Port+Harcourt&z=13&output=embed"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scroll-list__item js-scroll-list-item">
+                    <div class="center-card">
+                        <img class="center-card__img" aria-hidden="true" src="images\graphics\pastors\pastor harry.jpeg" alt="">
+                        <div class="center-card__body">
+                            <h3 class="center-title">GODLIFE EXPERIENCE CENTRE</h3>
+                            <p class="center-meta"><strong>LOCATION:</strong> CHOBA – RUMUALOGU – ALAKAHIA – RUMUOSI – RUMUEKINI</p>
+                            <p class="center-meta"><strong>LEADERS:</strong> PASTOR HARRY OWANABA – MR. AND MRS. JACKSON IGBANI</p>
+                            <p class="center-meta"><strong>PHONE NUMBER:</strong> 09062711357</p>
+                        </div>
+                        <div class="center-map">
+                            <iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Choba+Rumuolaogu&z=13&output=embed"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scroll-list__item js-scroll-list-item">
+                    <div class="center-card">
+                        <img class="center-card__img" aria-hidden="true" src="images\graphics\pastors\pastor val.jpeg" alt="">
+                        <div class="center-card__body">
+                            <h3 class="center-title">MAKE YOUR HOME A  CENTRE</h3>
+                            <p class="center-meta"><strong>LOCATION:</strong> REGISTER</p>
+                            <p class="center-meta"><strong>LEADERS:</strong> REGISTER</p>
+                            <p class="center-meta"><strong>CONTACT US:</strong> 07026521620</p>
+                        </div>
+                        <div class="center-map">
+                            <iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.app.goo.gl/2mirukzoWPxz9S9s9"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- social links removed per request -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/smooth-scrollbar/8.3.1/smooth-scrollbar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/smooth-scrollbar/8.3.1/plugins/overscroll.js"></script>
+    <script>
+        $(document).ready(function () {
+            var Scrollbar = window.Scrollbar;
+
+            Scrollbar.use(window.OverscrollPlugin);
+
+            var customScroll = Scrollbar.init(document.querySelector('.js-scroll-list'), {
+                plugins: {
+                    overscroll: true
+                }
+            });
+
+            var listItem = $('.js-scroll-list-item');
+
+            listItem.eq(0).addClass('item-focus');
+            listItem.eq(1).addClass('item-next');
+
+            customScroll.addListener(function (status) {
+
+                var $content = $('.js-scroll-content');
+
+                var viewportScrollDistance = 0;
+
+
+                viewportScrollDistance = status.offset.y;
+                var viewportHeight = $content.height();
+                var listHeight = 0;
+                var $listItems = $content.find('.js-scroll-list-item');
+                for (var i = 0; i < $listItems.length; i++) {
+                    listHeight += $($listItems[i]).height();
+                }
+
+                var top = status.offset.y;
+                // console.log(top);
+                var visibleCenterVertical = 0;
+                visibleCenterVertical = top;
+
+                var parentTop = 1;
+                var $lis = $('.js-scroll-list-item');
+                var $focusLi;
+                for (var i = 0; i < $lis.length; i++) {
+                    var $li = $($lis[i]);
+                    var liTop = $li.position().top;
+                    var liRelTop = liTop - parentTop;
+
+                    var distance = 0;
+                    var distance = Math.abs(top - liRelTop);
+                    var maxDistance = $('.js-scroll-content').height() / 2;
+                    var distancePercent = distance / (maxDistance / 100);
+
+
+                    if (liRelTop + $li.parent().scrollTop() > top) {
+                        if (!$li.hasClass('item-focus')) {
+                            $li.prev().addClass('item-hide');
+                            $lis.removeClass('item-focus');
+                            $lis.removeClass('item-next');
+                        }
+                        $li.removeClass('item-hide');
+                        $li.addClass('item-focus');
+                        $li.next().addClass('item-next');
+                        break;
+                    }
+                }
+            });
+
+        });
+    </script>
+</body>
+
+</html>

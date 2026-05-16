@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@codewith_muhilan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stage {
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background: #000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .container {
+          perspective: 2000px;
+          width: 300px;
+          height: 400px;
+          transform-style: preserve-3d;
+        }
+        
+        .ring {
+          width: 100%;
+          height: 100%;
+          transform-style: preserve-3d;
+        }
+        
+        .img {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 5%;
+          transform-style: preserve-3d;
+          user-select: none;
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <div class="stage">
+
+        <div class="container">
+         <div class="ring">
+           <div class="img"></div>
+           <div class="img"></div>
+           <div class="img"></div>
+           <div class="img"></div>
+           <div class="img"></div>
+           <div class="img"></div>
+           <div class="img"></div>
+           <div class="img"></div>
+           <div class="img"></div>
+           <div class="img"></div>
+          </div>
+        </div>
+    </div>
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
+ <script>
+  let xPos = 0;
+  let autoRotateTimeline;
+  let isInteracting = false;
+  let isPausedByHover = false;
+  let lastDragDirection = 1;
+  const container = document.querySelector('.container');
+
+  gsap.timeline()
+      .set('.ring', { rotationY: 180, cursor: 'grab' }) // set initial rotationY so the parallax jump happens off-screen
+      .set('.img', { // apply transform rotations to each image
+          rotateY: (i) => i * -36,
+          transformOrigin: '50% 50% 500px',
+          z: -500,
+          backgroundImage: (i) => 'url(' + getImageUrl(i) + ')', // Use getImageUrl function to get individual image URLs
+          backgroundPosition: (i) => getBgPos(i),
+          backfaceVisibility: 'hidden'
+      })
+      .from('.img', {
+          duration: 1.5,
+          y: 200,
+          opacity: 0,
+          stagger: 0.1,
+          ease: 'expo'
+      })
+      .add(() => {
+          // Start auto-rotate animation
+          startAutoRotate();
+
+          document.querySelectorAll('.img').forEach(img => {
+              img.addEventListener('mouseenter', (e) => {
+                  let current = e.currentTarget;
+                  gsap.to('.img', { opacity: (i, t) => (t == current) ? 1 : 0.5, ease: 'power3' })
+              });
+
+              img.addEventListener('mouseleave', (e) => {
+                  gsap.to('.img', { opacity: 1, ease: 'power2.inOut' })
+              });
+          });
+      }, '-=0.5');
+
+  // Auto-rotate function
+  function startAutoRotate() {
+      restartAutoRotate();
+  }
+
+  function restartAutoRotate(direction = lastDragDirection) {
+      if (autoRotateTimeline) {
+          autoRotateTimeline.kill();
+      }
+      const rotationValue = direction > 0 ? '+=3600' : '-=3600';
+      autoRotateTimeline = gsap.to('.ring', {
+          rotationY: rotationValue,
+          duration: 300,
+          ease: 'none',
+          repeat: -1,
+          onUpdate: () => { gsap.set('.img', { backgroundPosition: (i) => getBgPos(i) }) }
+      });
+  }
+
+  // Pause auto-rotate
+  function pauseAutoRotate() {
+      if (autoRotateTimeline) {
+          autoRotateTimeline.pause();
+      }
+  }
+
+  // Resume auto-rotate
+  function resumeAutoRotate() {
+      if (!isInteracting) {
+          restartAutoRotate();
+      }
+  }
+
+  document.addEventListener('mousedown', dragStart);
+  document.addEventListener('touchstart', dragStart);
+  container.addEventListener('mouseenter', () => {
+      isPausedByHover = true;
+      pauseAutoRotate();
+  });
+  container.addEventListener('mouseleave', () => {
+      isPausedByHover = false;
+      if (!isInteracting) {
+          restartAutoRotate();
+      }
+  });
+
+  function dragStart(e) {
+      isInteracting = true;
+      pauseAutoRotate();
+      if (e.touches) e.clientX = e.touches[0].clientX;
+      xPos = Math.round(e.clientX);
+      gsap.set('.ring', { cursor: 'grabbing' });
+      document.addEventListener('mousemove', drag);
+      document.addEventListener('touchmove', drag);
+  }
+
+  function drag(e) {
+      if (e.touches) e.clientX = e.touches[0].clientX;
+      const delta = Math.round(e.clientX) - xPos;
+      if (delta !== 0) {
+          lastDragDirection = delta < 0 ? 1 : -1;
+      }
+      const rotationDelta = delta * 0.25;
+      const currentRotation = gsap.getProperty('.ring', 'rotationY');
+      gsap.set('.ring', {
+          rotationY: currentRotation - rotationDelta
+      });
+      gsap.set('.img', { backgroundPosition: (i) => getBgPos(i) });
+      xPos = Math.round(e.clientX);
+  }
+
+  document.addEventListener('mouseup', dragEnd);
+  document.addEventListener('touchend', dragEnd);
+
+  function dragEnd(e) {
+      isInteracting = false;
+      document.removeEventListener('mousemove', drag);
+      document.removeEventListener('touchmove', drag);
+      gsap.set('.ring', { cursor: 'grab' });
+      if (!isPausedByHover) {
+          restartAutoRotate();
+      }
+  }
+
+  function getBgPos(i) { //returns the background-position string to create parallax movement in each image
+      return (100 - gsap.utils.wrap(0, 360, gsap.getProperty('.ring', 'rotationY') - 180 - i * 36) / 360 * 500) + 'px 0px';
+  }
+
+  function getImageUrl(i) {
+      // Define separate image URLs here for each image
+      const imageUrls = [
+          'https://sammy3755.github.io/testimonies/testimony/FB_IMG_1773530063762.jpg',
+          'https://sammy3755.github.io/testimonies/testimony/FB_IMG_1773530729101.jpg',
+          'https://sammy3755.github.io/testimonies/testimony/FB_IMG_1773531086972.jpg',
+          'https://sammy3755.github.io/testimonies/testimony/FB_IMG_1773531102483.jpg',
+          'https://sammy3755.github.io/testimonies/testimony/FB_IMG_1773531106305.jpg',
+          'https://sammy3755.github.io/testimonies/testimony/FB_IMG_1773531108565.jpg',
+          'https://sammy3755.github.io/testimonies/testimony/FB_IMG_1773531111300.jpg',
+          'https://sammy3755.github.io/testimonies/testimony/FB_IMG_1773531149498.jpg',
+          'https://sammy3755.github.io/testimonies/testimony/FB_IMG_1773531151589.jpg',
+          'https://sammy3755.github.io/testimonies/testimony/FB_IMG_1773531158121.jpg'
+      ];
+      return imageUrls[i];
+  }
+</script>
+
+</body>
+</html>
